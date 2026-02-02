@@ -1,5 +1,5 @@
-ROT_SPEED = 3;
-SPEED = 4;
+CAR_SPEED = 6;
+ROT_CAR_SPEED = CAR_SPEED*3/4;
 
 class Car {
   constructor(x, y) {
@@ -8,14 +8,14 @@ class Car {
     this.w = 30;
     this.h = 20;
     this.rotation = -90;
-    this.speed = 0;
+    this.moving = 0;
     this.rays = [];
-    this.ai_inputs = [0, 0, 0]
+    this.ai_action = 2;
     this.steerSmooth = 0;
   }
   move() {
-    this.x += cos(this.rotation) * this.speed;
-    this.y += sin(this.rotation) * this.speed;
+    this.x += cos(this.rotation) * this.moving * CAR_SPEED;
+    this.y += sin(this.rotation) * this.moving * CAR_SPEED;
   }
   draw() {
     push();
@@ -50,23 +50,30 @@ class Car {
     );
     pop();
   }
+  increaseCarSpeed(diff) {
+    CAR_SPEED += diff;
+    ROT_CAR_SPEED = CAR_SPEED*3/4;
+  }
   resetPosition() {
     this.x = 130;
     this.y = 400;
     this.rotation = -90;
   }
+  flipCar() {
+    this.rotation += 180;
+  }
   startMoving() {
-    this.speed = SPEED;
+    this.moving = 1;
   }
   stopMoving() {
-    this.speed = 0;
+    this.moving = 0;
   }
   applySteering(action) {
     const steerTarget = action === 0 ? -1 : action === 1 ? 1 : 0;
     const smoothFactor = 0.2;  // higher = snappier (e.g. 0.1 = very smooth, 0.25 = responsive)
     this.steerSmooth += (steerTarget - this.steerSmooth) * smoothFactor;
 
-    const turnRate = this.speed > 0 ? ROT_SPEED : 0;
+    const turnRate = CAR_SPEED > 0 ? ROT_CAR_SPEED : 0;
     this.rotation += this.steerSmooth * turnRate;
 
     const labels = ["LEFT", "RIGHT", "STRAIGHT"];
@@ -93,12 +100,24 @@ class Car {
     return this.rays.map(ray => ray.normalizedDistance);
   }
   outputs() {
-    if (keyIsDown(LEFT_ARROW) === true || keyIsDown(65) === true) {
-      return [1, 0, 0]
-    } else if (keyIsDown(RIGHT_ARROW) === true || keyIsDown(68) === true) {
-      return [0, 1, 0]
+    // convert the action to one-hot encoding
+    if (NN_MODE === "PREDICT") {
+     switch (this.ai_action) {
+      case 0:
+        return [1, 0, 0]
+      case 1:
+        return [0, 1, 0]
+      case 2:
+        return [0, 0, 1]
+     }
     } else {
-      return [0, 0, 1]
+      if (keyIsDown(LEFT_ARROW) === true || keyIsDown(65) === true) {
+        return [1, 0, 0]
+      } else if (keyIsDown(RIGHT_ARROW) === true || keyIsDown(68) === true) {
+        return [0, 1, 0]
+      } else {
+        return [0, 0, 1]
+      }
     }
   }
 }

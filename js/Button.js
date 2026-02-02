@@ -6,7 +6,7 @@ class Button{
         this.h = h;
         this.text = text;
         this.onClick = onClick;
-        this.radius = 4;
+        this.radius = 6;
     }
     is_hovering(){
         return mouseX > this.x && mouseX < this.x + this.w && mouseY > this.y && mouseY < this.y + this.h;
@@ -14,14 +14,15 @@ class Button{
     draw(){
         push();
         translate(this.x, this.y);
-        fill(60, 130, 255); // Nice blue
+        fill(40, 100, 200); // Slightly darker blue
         if(this.is_hovering()){
             fill(200);
         }
         rect(0, 0, this.w, this.h, this.radius);
-        fill(0);
-        textSize(12);
-        text(this.text, 5, 15);
+        fill(255);
+        textSize(14);
+        textAlign(CENTER, CENTER);
+        text(this.text, this.w/2, this.h/2);
         pop();
     }
     check_click(){

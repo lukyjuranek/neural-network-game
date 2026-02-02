@@ -1,8 +1,9 @@
 
-function plotLoss(lossArray = [0], x = 50, y = 50, w = 300, h = 150) {
+function plotLoss(lossArray = [0], x, y, w = 300, h = 150) {
   push();
   translate(x, y);
   stroke(0);
+  strokeWeight(2);
   noFill();
   rect(0, 0, w, h); // draw plot background
 
@@ -25,12 +26,14 @@ function plotLoss(lossArray = [0], x = 50, y = 50, w = 300, h = 150) {
   const smoothedLoss = last30Losses.reduce((a, b) => a + b, 0) / last30Losses.length;
   textSize(12);
   fill(0);
+  strokeWeight(0);
   text(`Loss: ${lossArray[lossArray.length - 1]?.toFixed(2)}`, 10, h - 24);
   fill(0, 0, 200);
   text(`Loss (moving average): ${smoothedLoss.toFixed(2)}`, 10, h - 10);
 
   // --- Plot actual loss in light gray ---
   stroke(200); // light gray
+  strokeWeight(1);
   noFill();
   beginShape();
   for (let i = 0; i < lossArray.length; i++) {
@@ -61,8 +64,8 @@ function drawClassBalance(x, y) {
   const nStraight = replayBuffer.filter(r => r.outputs.indexOf(1) === 2).length;
   // Draw a "Class Balance" bar visualization
   const totalSamples = nLeft + nRight + nStraight;
-  const barX = x + 100;
-  const barY = y + 120;
+  const barX = x;
+  const barY = y;
   const barW = 220;
   const barH = 18;
   const pad = 2;
@@ -74,7 +77,7 @@ function drawClassBalance(x, y) {
   push();
   textAlign(LEFT, BOTTOM);
   fill(0);
-  text("Class Balance:", barX, barY - 18);
+  text("Collected Data Class Balance:", barX, barY - 18);
   // Bar background
   fill(230);
   rect(barX, barY, barW, barH, 4);
@@ -134,14 +137,11 @@ function draw_UI(x, y) {
   // const hiddenActs = getAllActivations(car.inputs());
   // drawActivations(hiddenActs, x+100, y + 300, 300, 100);
   if (typeof car !== 'undefined' && car.inputs) {
-    drawNetwork(720, 350, 300, 400, car.inputs());
+    drawNetwork(740, 350, 300, 400, car.inputs());
   }
 
-  var startY = y;
-
-  text(`Outputs: ${car.outputs()}(${UI.action})`, x + 100, y + 30);
-
-
+  text(`Input: ${car.inputs().map(x => x.toFixed(2)).join(', ')}`, x, y + 80);
+  text(`Output: ${car.outputs()}`, x, y + 100);
 
   // On the green isladn. Left arrow/a - move left. Right arrow/d - move right. Up arrow/w - start moving
   push();
@@ -152,17 +152,21 @@ function draw_UI(x, y) {
   text(`D / Arrow RIGHT - steer right`, 0, 40);
   text(`SPACE - toggle mode`, 0, 60);
   text(`R - reset car`, 0, 80);
+  text(`F - flip car`, 0, 100);
   pop();
 
 
   drawClassBalance(x, y);
+  plotLoss(UI.lossHistory, x, y+110, 300, 150);
 
 
   // Training / learning text
   textSize(24);
-  text(NN_MODE == "TRAIN" ? "Training" : "Predicting", 540, 40);
+  text(NN_MODE == "TRAIN" ? "Training Mode" : "Predicting Mode", 470, 520);
   textSize(12);
-  text(NN_MODE == "TRAIN" ? "Drive to train the model" : "Let the model drive", 540, 60);
+  text(NN_MODE == "TRAIN" ? "Drive to train the model" : "Let the model drive", 470, 540);
 
+  textSize(14);
+  text(`Car Speed: ${CAR_SPEED}`, 470,700);
 
 }

@@ -1,4 +1,4 @@
-WIDTH = 1100;
+WIDTH = 1200;
 HEIGHT = 750;
 
 let car;
@@ -33,19 +33,21 @@ function setup() {
   car = new Car(130, 400);
   car.rays = rays;
 
-  UI.buttons.push(new Button(470,500, 170, 20, "Reset car(press R)", () => {
-    car.resetPosition();
-  }));
-  UI.buttons.push(new Button(470,530, 170, 20, "Toggle Mode(press SPACE)", () => {
+  UI.buttons.push(new Button(470,560, 160, 30, "Toggle Mode (SPACE)", () => {
     if (NN_MODE == "TRAIN") {
       NN_MODE = "PREDICT";
     } else {
       NN_MODE = "TRAIN";
     }
   }));
-  UI.buttons.push(new Button(470,560, 170, 20, "Reset model", () => {
+  UI.buttons.push(new Button(470,600, 160, 30, "Reset car (R)", () => {
+    car.resetPosition();
+  }));
+  UI.buttons.push(new Button(470,640, 160, 30, "Reset model", () => {
     NN.reset();
   }));
+  UI.buttons.push(new Button(560,680, 30, 30, "-", () => car.increaseCarSpeed(-1)));
+  UI.buttons.push(new Button(600,680, 30, 30, "+", () => car.increaseCarSpeed(1)));
 
 
   radius = 250;
@@ -79,6 +81,9 @@ function keyPressed() {
     car.stopMoving();
     GAME_STATE = "PAUSE";
     console.log(JSON.stringify(NN.model))
+  }
+  if (key === "f") {
+    car.flipCar();
   }
 }
 let training = false;   // flag to know if fit() is running
@@ -186,7 +191,7 @@ function draw() {
     }
   }
 
-  draw_UI(700, 20);
+  draw_UI(700, 70);
 
   UI.buttons.forEach((button) => {
     button.draw();
