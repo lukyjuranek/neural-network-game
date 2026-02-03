@@ -18,8 +18,9 @@ function preload() {
 }
 
 function setup() {
-  createCanvas(WIDTH, HEIGHT);
+  createCanvas(WIDTH, HEIGHT)
   angleMode(DEGREES);
+  textFont('Segoe UI');
   frameRate(40);
   noStroke();
   fill(0);
@@ -33,21 +34,22 @@ function setup() {
   car = new Car(130, 400);
   car.rays = rays;
 
-  UI.buttons.push(new Button(470,560, 160, 30, "Toggle Mode (SPACE)", () => {
+  // Buttons hardcoded to match draw_UI(670, 20)
+  UI.buttons.push(new Button(682, 72, 156, 28, "Toggle Mode (SPACE)", () => {
     if (NN_MODE == "TRAIN") {
       NN_MODE = "PREDICT";
     } else {
       NN_MODE = "TRAIN";
     }
   }));
-  UI.buttons.push(new Button(470,600, 160, 30, "Reset car (R)", () => {
+  UI.buttons.push(new Button(682, 104, 156, 28, "Reset car (R)", () => {
     car.resetPosition();
   }));
-  UI.buttons.push(new Button(470,640, 160, 30, "Reset model", () => {
+  UI.buttons.push(new Button(682, 136, 156, 28, "Reset model", () => {
     NN.reset();
   }));
-  UI.buttons.push(new Button(560,680, 30, 30, "-", () => car.increaseCarSpeed(-1)));
-  UI.buttons.push(new Button(600,680, 30, 30, "+", () => car.increaseCarSpeed(1)));
+  UI.buttons.push(new Button(767, 172, 28, 28, "-", () => car.increaseCarSpeed(-1)));
+  UI.buttons.push(new Button(807, 172, 28, 28, "+", () => car.increaseCarSpeed(1)));
 
 
   radius = 250;
@@ -191,7 +193,7 @@ function draw() {
     }
   }
 
-  draw_UI(700, 70);
+  draw_UI(670, 20);
 
   UI.buttons.forEach((button) => {
     button.draw();

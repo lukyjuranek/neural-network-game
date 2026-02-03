@@ -96,6 +96,16 @@ class Road {
       vertex(innerPath[i][0], innerPath[i][1]);
     }
     endShape(CLOSE);
+    // Lighter green stroke so island reads clearly
+    stroke(60, 130, 65);
+    strokeWeight(2);
+    noFill();
+    beginShape();
+    for (let i = 0; i < innerPath.length; i++) {
+      vertex(innerPath[i][0], innerPath[i][1]);
+    }
+    endShape(CLOSE);
+    noStroke();
   }
   drawTrackRoad() {
     fill(55, 55, 60);
@@ -110,6 +120,21 @@ class Road {
     }
     endContour();
     endShape(CLOSE);
+    // White outer edge and inner edge strokes for clarity
+    stroke(200, 200, 205);
+    strokeWeight(2);
+    noFill();
+    beginShape();
+    for (let i = 0; i < outerPath.length; i++) {
+      vertex(outerPath[i][0], outerPath[i][1]);
+    }
+    endShape(CLOSE);
+    beginShape();
+    for (let i = 0; i < innerPath.length; i++) {
+      vertex(innerPath[i][0], innerPath[i][1]);
+    }
+    endShape(CLOSE);
+    noStroke();
   }
 
   drawCourseCoordinates() {

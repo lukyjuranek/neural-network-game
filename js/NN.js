@@ -30,7 +30,7 @@ let NN = {
       units: 32,
       // useBias: false,              
       activation: 'relu',
-        kernelInitializer: 'heNormal'
+      kernelInitializer: 'heNormal'
     }));
 
 
@@ -140,11 +140,20 @@ function drawNetwork(x, y, w, h, inputArray) {
   const layerSpacing = w / (numLayers - 1);
   const maxNodes = Math.max(...layerSizes);
   const nodeSpacing = h / (maxNodes + 1);
+  const pad = 24;
+  const panelX = x - pad;
+  const panelY = y - pad;
+  const panelW = w + pad * 2;
+  const panelH = h + pad * 2;
 
   push();
-  translate(x, y);
+  translate(panelX, panelY);
+  // Background only, no border
+  fill(248, 248, 252, 230);
+  noStroke();
+  translate(pad, pad);
 
-  // ---- draw connections (behind nodes) ----
+  // ---- draw connections (behind nodes), color by sign ----
   for (let layerIdx = 0; layerIdx < numLayers - 1; layerIdx++) {
     const nFrom = layerSizes[layerIdx];
     const nTo = layerSizes[layerIdx + 1];
@@ -158,31 +167,24 @@ function drawNetwork(x, y, w, h, inputArray) {
       for (let j = 0; j < nTo; j++) {
         const yTo = getNodeY(layerIdx + 1, j, layerSizes, nodeSpacing, h);
         const weight = weights[i * cols + j];
-        const alpha = 60 + Math.min(180, Math.abs(weight) * 80);
-        // // Map values from 0 to 1 to fill all hues (0 to 360)
-        // const normalized = ((weight % 1) + 1) % 1; // ensures 0 <= normalized < 1 for any weight
-        // const hue = map(normalized, 0, 1, 0, 360);
-        // stroke(hue, 100, 100, alpha);
-        stroke(0,0,0,alpha);
+        const alpha = 80 + Math.min(150, Math.abs(weight) * 80);
+        if (weight >= 0) {
+          stroke(50, 120, 220, alpha);
+        } else {
+          stroke(220, 90, 70, alpha);
+        }
         const thickness = 0.2 + Math.min(2.3, Math.abs(weight) * 1.2);
         strokeWeight(thickness);
         line(xFrom, yFrom, xTo, yTo);
-        
-
-        // draw weight value in the middle of the connection
-        // const midX = (xFrom + xTo) / 2;
-        // const midY = (yFrom + yTo) / 2;
-        // noStroke();
-        // fill(0);
-        // textSize(8);
-        // textAlign(CENTER, CENTER);
-        // text(weight.toFixed(2), midX, midY);
       }
     }
   }
 
   // ---- draw nodes ----
   const OUTPUT_LABELS = ["Steer LEFT", "Steer RIGHT", "Do nothing"];
+  const maxIdx = activations[activations.length - 1].indexOf(
+    Math.max(...activations[activations.length - 1])
+  );
 
   for (let layerIdx = 0; layerIdx < numLayers; layerIdx++) {
     const n = layerSizes[layerIdx];
@@ -192,38 +194,40 @@ function drawNetwork(x, y, w, h, inputArray) {
       const cy = getNodeY(layerIdx, i, layerSizes, nodeSpacing, h);
       const a = acts[i];
       const radius = 10;
+      const isActiveOutput = layerIdx === numLayers - 1 && i === maxIdx;
+
+      if (isActiveOutput && drawingContext.shadowBlur !== undefined) {
+        drawingContext.shadowColor = 'rgba(210, 140, 30, 0.8)';
+        drawingContext.shadowBlur = 12;
+      }
       fill(255 - a * 255);
-      stroke(0);
+      stroke(60);
       strokeWeight(1);
       circle(cx, cy, radius);
+      if (drawingContext.shadowBlur !== undefined) {
+        drawingContext.shadowBlur = 0;
+      }
 
-      // If input layer, show RayX and value label to the left of each node
       if (layerIdx === 0) {
-        // Only write value if available and inputArray provided
         let inputVal = (inputArray && inputArray[i] !== undefined)
           ? inputArray[i].toFixed(2) : '';
         noStroke();
-        fill(0);
+        fill(40);
         textSize(11);
         textAlign(RIGHT, CENTER);
         text(`Ray${i+1}: ${inputVal}`, cx - 15, cy);
       }
 
       if (layerIdx === numLayers - 1) {
-        // Find the index of the predicted output (maximum activation in output layer)
-        const maxIdx = activations[activations.length - 1].indexOf(
-          Math.max(...activations[activations.length - 1])
-        );
         noStroke();
         if (i === maxIdx) {
-          // Highlight the predicted one (e.g. yellow)
           fill(210, 140, 30);
         } else {
-          fill(0);
+          fill(80);
         }
         textSize(11);
         textAlign(LEFT, CENTER);
-        text(OUTPUT_LABELS[i], cx + 12, cy);
+        text(`${a.toFixed(2)} ${OUTPUT_LABELS[i]}`, cx + 14, cy);
       }
     }
   }

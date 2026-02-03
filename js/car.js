@@ -19,6 +19,15 @@ class Car {
   }
   draw() {
     push();
+    // Shadow
+    translate(this.x, this.y + 5);
+    rotate(this.rotation);
+    fill(0, 0, 0, 45);
+    noStroke();
+    ellipse(0, 0, this.w * 1.3, this.h * 1);
+    pop();
+
+    push();
     translate(this.x, this.y);
     rotate(this.rotation);
     imageMode(CENTER);
