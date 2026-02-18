@@ -27,7 +27,6 @@ function setup() {
   textSize(12);
   NN.createModel();
 
-  // var rays = [-40,-10, -5, 0, 5, 10,40].map(angle => new Ray(angle));
   var rays = [-70, -40, -5, 0, 5, 40, 70].map((angle) => new Ray(angle));
 
   road = new Road();
@@ -172,8 +171,6 @@ function draw() {
     car.ai_action = prediction.argMax(1).dataSync()[0];
     car.handle_predicted_controls();
   } else if (NN_MODE == "TRAIN" && GAME_STATE != "PAUSE") {
-    // xs.push(car.inputs());
-    // ys.push(car.outputs());
     car.handle_inputs();
 
     const sample = {
@@ -203,3 +200,9 @@ function draw() {
 
   // road.drawCourseCoordinates();
 }
+
+
+function sum(x,y){
+
+}
+

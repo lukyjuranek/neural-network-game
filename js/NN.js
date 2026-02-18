@@ -17,15 +17,6 @@ let NN = {
       kernelInitializer: 'heNormal'
     }));
 
-
-    // this.model.add(tf.layers.batchNormalization());
-
-    // this.model.add(tf.layers.activation({ activation: 'relu' }));
-
-    // this.model.add(tf.layers.dropout({
-    //   rate: 0.3
-    // }));
-
     this.model.add(tf.layers.dense({
       units: 32,
       // useBias: false,              
@@ -33,19 +24,9 @@ let NN = {
       kernelInitializer: 'heNormal'
     }));
 
-
-    // this.model.add(tf.layers.batchNormalization());
-
-    // this.model.add(tf.layers.activation({ activation: 'relu' }));
-
-    // this.model.add(tf.layers.dropout({
-    //   rate: 0.3
-    // }));
-
     this.model.add(tf.layers.dense({
       units: 3,
       activation: 'softmax'
-      // kernelInitializer: 'heNormal'
     }));
 
     this.model.compile({
@@ -55,22 +36,6 @@ let NN = {
     });
   }
 }
-
-// inputs = tf.tensor2d(xs);
-// outputs = tf.tensor2d(ys);
-
-// const config = {
-//   epochs: 20,
-// }
-// NN.model.fit(inputs,outputs, config).then((response)=>{
-//   console.log(JSON.stringify(response));
-//   NN.response = response;
-//   stats.loss = response.history.loss[0];
-// })
-
-// let outputs = model.predict(inputs)
-// outputs.print()
-
 
 function getAllActivations(inputArray) {
   const inputTensor = tf.tensor([inputArray]);
