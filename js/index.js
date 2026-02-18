@@ -33,9 +33,8 @@ function setup() {
   car = new Car(130, 400);
   car.rays = rays;
 
-  // Buttons hardcoded to match draw_UI(670, 20)
   UI.buttons.push(new Button(682, 72, 156, 28, "Toggle Mode (SPACE)", () => {
-    if (NN_MODE == "TRAIN") {
+    if (NN_MODE === "TRAIN") {
       NN_MODE = "PREDICT";
     } else {
       NN_MODE = "TRAIN";
@@ -51,21 +50,16 @@ function setup() {
   UI.buttons.push(new Button(807, 172, 28, 28, "+", () => car.increaseCarSpeed(1)));
 
 
-  radius = 250;
-  road.initiate_walls();
+  road.initWalls();
 }
 
 function keyPressed() {
   if (key === " ") {
-    if (NN_MODE == "TRAIN") {
+    if (NN_MODE === "TRAIN") {
       car.resetPosition();
       car.stopMoving();
       NN_MODE = "PREDICT";
       GAME_STATE = "PAUSE";
-      // NN.model.fit(inputs, outputs, config).then((response) => {
-      //   console.log(JSON.stringify(response));
-      //   NN.response = response;
-      // });
     } else {
       car.resetPosition();
       car.stopMoving();
@@ -148,7 +142,7 @@ function draw() {
   road.drawTrackRoad();
   
   car.rays.forEach((ray) => {
-    if (NN_MODE == "PREDICT") {
+    if (NN_MODE === "PREDICT") {
       ray.draw();
     }
     ray.update_distance();
@@ -166,11 +160,11 @@ function draw() {
     }
   });
 
-  if (NN_MODE == "PREDICT" && GAME_STATE != "PAUSE") {
+  if (NN_MODE === "PREDICT" && GAME_STATE !== "PAUSE") {
     let prediction = NN.model.predict(tf.tensor2d([car.inputs()]));
     car.ai_action = prediction.argMax(1).dataSync()[0];
     car.handle_predicted_controls();
-  } else if (NN_MODE == "TRAIN" && GAME_STATE != "PAUSE") {
+  } else if (NN_MODE === "TRAIN" && GAME_STATE !== "PAUSE") {
     car.handle_inputs();
 
     const sample = {
@@ -190,19 +184,12 @@ function draw() {
     }
   }
 
-  draw_UI(670, 20);
+  drawUI(670, 20);
 
   UI.buttons.forEach((button) => {
     button.draw();
   });
   const anyHovering = UI.buttons.some((b) => b.is_hovering());
   cursor(anyHovering ? HAND : ARROW);
-
-  // road.drawCourseCoordinates();
-}
-
-
-function sum(x,y){
-
 }
 

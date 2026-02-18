@@ -58,11 +58,6 @@ class Road {
     this.walls = [];
   }
 
-  draw() {
-    fill(55, 55, 60);
-    noStroke();
-    beginShape();
-  }
   createWalls(path) {
     const step = 10; // distance between wall circles, smaller for smooth curves
     for (let i = 0; i < path.length - 1; i++) {
@@ -79,7 +74,7 @@ class Road {
       }
     }
   }
-  initiate_walls() {
+  initWalls() {
     this.walls = [];
 
 

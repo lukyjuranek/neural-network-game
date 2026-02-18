@@ -117,9 +117,9 @@ function plotLoss(lossArray = [], x, y, w = 300, h = 150) {
 
 
 function drawClassBalance(x, y) {
-  const nLeft = replayBuffer.filter(r => r.outputs.indexOf(1) === 0).length;
-  const nRight = replayBuffer.filter(r => r.outputs.indexOf(1) === 1).length;
-  const nStraight = replayBuffer.filter(r => r.outputs.indexOf(1) === 2).length;
+  const nLeft = replayBuffer.filter(r => r.outputs[0] === 1).length;
+  const nRight = replayBuffer.filter(r => r.outputs[1] === 1).length;
+  const nStraight = replayBuffer.filter(r => r.outputs[2] === 1).length;
   const totalSamples = nLeft + nRight + nStraight;
   const barX = x;
   const barY = y;
@@ -165,16 +165,16 @@ function drawClassBalance(x, y) {
 }
 
 
-function draw_UI(x, y) {
+function drawUI(x, y) {
   // Mode + buttons panel
   drawPanel(x, y, DATA_COL_W, 200);
   textSize(18);
   fill(0);
   textAlign(LEFT, TOP);
-  text(NN_MODE == "TRAIN" ? "Mode: Training" : "Mode: Predicting", x + PANEL_PADDING, y + PANEL_PADDING);
+  text(NN_MODE === "TRAIN" ? "Mode: Training" : "Mode: Predicting", x + PANEL_PADDING, y + PANEL_PADDING);
   textSize(11);
   fill(80);
-  text(NN_MODE == "TRAIN" ? "Drive to train" : "Model drives", x + PANEL_PADDING, y + PANEL_PADDING + 22);
+  text(NN_MODE === "TRAIN" ? "Drive to train" : "Model drives", x + PANEL_PADDING, y + PANEL_PADDING + 22);
   fill(40);
   textSize(12);
   textAlign(LEFT, CENTER);

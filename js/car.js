@@ -1,6 +1,18 @@
 CAR_SPEED = 6;
 ROT_CAR_SPEED = CAR_SPEED*3/4;
 
+function getSteeringActionFromKeys() {
+  if (keyIsDown(LEFT_ARROW) || keyIsDown(65)) return 0;
+  if (keyIsDown(RIGHT_ARROW) || keyIsDown(68)) return 1;
+  return 2;
+}
+
+function actionToOneHot(action) {
+  if (action === 0) return [1, 0, 0];
+  if (action === 1) return [0, 1, 0];
+  return [0, 0, 1];
+}
+
 class Car {
   constructor(x, y) {
     this.x = x;
@@ -93,40 +105,17 @@ class Car {
   }
 
   handle_inputs() {
-    if (GAME_STATE != "GAME") return;
-    let action;
-    if (keyIsDown(LEFT_ARROW) === true || keyIsDown(65) === true) {
-      action = 0;
-    } else if (keyIsDown(RIGHT_ARROW) === true || keyIsDown(68) === true) {
-      action = 1;
-    } else {
-      action = 2;
-    }
-    this.applySteering(action);
+    if (GAME_STATE !== "GAME") return;
+    this.applySteering(getSteeringActionFromKeys());
     return false;
   }
   inputs() {
     return this.rays.map(ray => ray.normalizedDistance);
   }
   outputs() {
-    // convert the action to one-hot encoding
     if (NN_MODE === "PREDICT") {
-     switch (this.ai_action) {
-      case 0:
-        return [1, 0, 0]
-      case 1:
-        return [0, 1, 0]
-      case 2:
-        return [0, 0, 1]
-     }
-    } else {
-      if (keyIsDown(LEFT_ARROW) === true || keyIsDown(65) === true) {
-        return [1, 0, 0]
-      } else if (keyIsDown(RIGHT_ARROW) === true || keyIsDown(68) === true) {
-        return [0, 1, 0]
-      } else {
-        return [0, 0, 1]
-      }
+      return actionToOneHot(this.ai_action);
     }
+    return actionToOneHot(getSteeringActionFromKeys());
   }
 }

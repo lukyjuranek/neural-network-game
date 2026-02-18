@@ -60,9 +60,9 @@ function getLayerSizes() {
   // Input size from first layer's inputShape
   sizes.push(layers[0].inputShape[layers[0].inputShape.length - 1]);  // 7
   for (const layer of layers) {
-    sizes.push(layer.units);  // 14, then 3
+    sizes.push(layer.units);  // 32, 32, 3
   }
-  return sizes;  // [7, 14, 3]
+  return sizes;  // [7, 32, 32, 3]
 }
 
 function getNodeY(layerIdx, nodeIdx, layerSizes, nodeSpacing, h) {

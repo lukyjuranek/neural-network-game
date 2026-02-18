@@ -15,7 +15,7 @@ class Wall {
     push();
     translate(this.x, this.y);
     circle(0, 0, this.radius * 2);
-    // Inneer circlew so it looks like a tire
+    // Inner circle so it looks like a tire
     fill(50);
     circle(0, 0, this.radius*2 - 8);
     pop();
